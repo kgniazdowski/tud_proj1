@@ -27,6 +27,8 @@ public class Controller {
     private PreparedStatement getProducenciStmt;
     private PreparedStatement getProducentByNameStmt;
     private PreparedStatement getLekiByProducentIdStmt;
+    private PreparedStatement deleteProducentStmt;
+    private PreparedStatement updateProducentStmt;
 
     public Controller()
     {
@@ -44,6 +46,8 @@ public class Controller {
             getProducenciStmt = connection.prepareStatement("SELECT * FROM Producent;");
             getProducentByNameStmt = connection.prepareStatement("SELECT id FROM Producent WHERE nazwa=?;");
             getLekiByProducentIdStmt = connection.prepareStatement("SELECT * from Lek WHERE producentId=?;");
+            deleteProducentStmt = connection.prepareStatement("DELETE FROM Producent WHERE nazwa=?;");
+            updateProducentStmt = connection.prepareStatement("UPDATE Producent SET nazwa=?, miasto=?, ulica=?, kodPocztowy=?, nr=? WHERE nazwa=?");
 
         }
         catch(SQLException e)
@@ -89,6 +93,41 @@ public class Controller {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public boolean DeleteProducent(String producentName)
+    {
+        try
+        {
+            deleteProducentStmt.setString(1, producentName);
+            deleteProducentStmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean UpdateProducent(String producentName, Producent modifiedProducent)
+    {
+        try
+        {
+            updateProducentStmt.setString(1, modifiedProducent.getNazwa());
+            updateProducentStmt.setString(2, modifiedProducent.getMiasto());
+            updateProducentStmt.setString(3, modifiedProducent.getUlica());
+            updateProducentStmt.setString(4, modifiedProducent.getKodPocztowy());
+            updateProducentStmt.setInt(5, modifiedProducent.getNr());
+            updateProducentStmt.setString(6, producentName);
+            updateProducentStmt.executeUpdate();
+            return true;
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean AddLek(Lek lek, String producentName)
