@@ -29,6 +29,9 @@ public class Controller {
     private PreparedStatement getLekiByProducentIdStmt;
     private PreparedStatement deleteProducentStmt;
     private PreparedStatement updateProducentStmt;
+	private PreparedStatement deleteLekStmt;
+	private PreparedStatement updateLekStmt;
+	private PreparedStatement getLekStmt;
 
     public Controller()
     {
@@ -48,7 +51,9 @@ public class Controller {
             getLekiByProducentIdStmt = connection.prepareStatement("SELECT * from Lek WHERE producentId=?;");
             deleteProducentStmt = connection.prepareStatement("DELETE FROM Producent WHERE nazwa=?;");
             updateProducentStmt = connection.prepareStatement("UPDATE Producent SET nazwa=?, miasto=?, ulica=?, kodPocztowy=?, nr=? WHERE nazwa=?");
-
+			deleteLekStmt = connection.prepareStatement("DELETE FROM Lek WHERE nazwa=? AND prodecentId=?'");
+			updateLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, prodecentId=? WHERE nazwa=? AND prodecentId=?;");
+			getLekStmt = connection.prepareStatement("SELECT * FROM Lek WHERE nazwa=? AND prodecentId=?;");
         }
         catch(SQLException e)
         {
@@ -130,34 +135,6 @@ public class Controller {
         }
     }
 
-    private boolean AddLek(Lek lek, String producentName)
-    {
-        int prodecentId;
-        try
-        {
-            getProducentByNameStmt.setString(1, producentName);
-            ResultSet rs = getProducentByNameStmt.executeQuery();
-
-            if (rs.next())
-            {
-                lek.setProducentId(rs.getInt("id"));
-                addLekStmt.setString(1, lek.getNazwa());
-                addLekStmt.setDouble(2, lek.getCena());
-                addLekStmt.setInt(3, lek.getIlosc());
-                addLekStmt.setInt(4, lek.getProducentId());
-                addLekStmt.executeUpdate();
-
-                return true;
-            }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            return false;
-        }
-        return false;
-    }
-
     public boolean ProducentExists(String producentName)
     {
         try
@@ -195,6 +172,80 @@ public class Controller {
         return 0;
     }
 
+    public boolean AddLek(Lek lek, String producentName)
+    {
+        int prodecentId;
+        try
+        {
+            getProducentByNameStmt.setString(1, producentName);
+            ResultSet rs = getProducentByNameStmt.executeQuery();
+
+            if (rs.next())
+            {
+                lek.setProducentId(rs.getInt("id"));
+                addLekStmt.setString(1, lek.getNazwa());
+                addLekStmt.setDouble(2, lek.getCena());
+                addLekStmt.setInt(3, lek.getIlosc());
+                addLekStmt.setInt(4, lek.getProducentId());
+                addLekStmt.executeUpdate();
+
+                return true;
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+	
+	public boolean DeleteLek(String lekName, String producentName)
+	{
+		if (!ProducentExists(producentName))
+		{
+			return false;
+		}
+		
+		try
+		{
+			deleteLekStmt.setString(1, lekName);
+			deleteLekStmt.setInt(2, GetProducentIdByName(producentName));
+			deleteLekStmt.executeUpdate();
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean UpdateLek(String lekName, String producentName, Lek modifiedLek)
+	{
+		if (!LekExists(lekName, producentName))
+		{
+			return false;
+		}
+		
+		try
+		{
+			updateLekStmt.setString(1, modifiedLek.getNazwa());
+			updateLekStmt.setDouble(2, modifiedLek.getCena());
+			updateLekStmt.setInt(3, modifiedLek.getIlosc());
+			updateLekStmt.setInt(4, modifiedLek.getProducentId());
+			updateLekStmt.setString(5, lekName);
+			updateLekStmt.setInt(6, GetProducentIdByName(producentName));
+			updateLekStmt.executeUpdate();
+			return true;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
     public List<Lek> GetLeki(String producentName)
     {
         int producentId = GetProducentIdByName(producentName);
@@ -217,6 +268,26 @@ public class Controller {
             e.printStackTrace();
         }
         return result;
+    }
+	
+	public boolean LekExists(String lekName, String producentName)
+    {
+        try
+        {
+			getLekStmt.setString(1, lekName);
+			getLekStmt.setInt(2, GetProducentIdByName(producentName))
+            ResultSet rs = getLekStmt.executeQuery();
+
+            if (rs.next())
+            {
+                return true;
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public void PrintMenu()
