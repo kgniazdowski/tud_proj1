@@ -83,4 +83,13 @@ public class Tests {
         assertEquals("BAYER", producentList.get(0).getNazwa());
         controller.DeleteAllProducents();
     }
+
+    @Test
+    public void CheckAddLek()
+    {
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+
+        controller.DeleteAllProducents();
+    }
 }
