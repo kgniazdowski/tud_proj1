@@ -51,9 +51,9 @@ public class Controller {
             getLekiByProducentIdStmt = connection.prepareStatement("SELECT * from Lek WHERE producentId=?;");
             deleteProducentStmt = connection.prepareStatement("DELETE FROM Producent WHERE nazwa=?;");
             updateProducentStmt = connection.prepareStatement("UPDATE Producent SET nazwa=?, miasto=?, ulica=?, kodPocztowy=?, nr=? WHERE nazwa=?");
-			deleteLekStmt = connection.prepareStatement("DELETE FROM Lek WHERE nazwa=? AND prodecentId=?'");
-			updateLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, prodecentId=? WHERE nazwa=? AND prodecentId=?;");
-			getLekStmt = connection.prepareStatement("SELECT * FROM Lek WHERE nazwa=? AND prodecentId=?;");
+			deleteLekStmt = connection.prepareStatement("DELETE FROM Lek WHERE nazwa=? AND producentId=?");
+			updateLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, producentId=? WHERE nazwa=? AND producentId=?;");
+			getLekStmt = connection.prepareStatement("SELECT * FROM Lek WHERE nazwa=? AND producentId=?;");
         }
         catch(SQLException e)
         {
@@ -275,7 +275,7 @@ public class Controller {
         try
         {
 			getLekStmt.setString(1, lekName);
-			getLekStmt.setInt(2, GetProducentIdByName(producentName))
+			getLekStmt.setInt(2, GetProducentIdByName(producentName));
             ResultSet rs = getLekStmt.executeQuery();
 
             if (rs.next())

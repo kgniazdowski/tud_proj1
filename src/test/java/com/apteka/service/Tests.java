@@ -31,7 +31,7 @@ public class Tests {
         assertEquals(nazwaProducenta, insertedProducent.getNazwa());
     }
 
-    @Test
+    /*@Test
     public void CheckGettingProducent()
     {
         List<Producent> producentList = controller.GetProducenci();
@@ -67,5 +67,5 @@ public class Tests {
         controller.UpdateProducent("BAYERR", producent);
         producentList = controller.GetProducenci();
         assertEquals("BAYER", producentList.get(0).getNazwa());
-    }
+    }*/
 }
