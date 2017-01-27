@@ -29,32 +29,46 @@ public class Tests {
         List<Producent> producentList = controller.GetProducenci();
         Producent insertedProducent = producentList.get(0);
         assertEquals(nazwaProducenta, insertedProducent.getNazwa());
+        //Usunięcie dodanego producenta
+        controller.DeleteAllProducents();
     }
 
-    /*@Test
+    @Test
     public void CheckGettingProducent()
     {
         List<Producent> producentList = controller.GetProducenci();
+        assertEquals(0, producentList.size());
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        producentList = controller.GetProducenci();
         assertEquals(1, producentList.size());
-        Producent producent = new Producent(nazwaProducenta + "R", miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        producent = new Producent(nazwaProducenta + "NEW", miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
         controller.AddProducent(producent);
         producentList = controller.GetProducenci();
         assertEquals(2, producentList.size());
+        controller.DeleteAllProducents();
     }
 
     @Test
     public void CheckDeletingProducent()
     {
-        controller.DeleteProducent("BAYERR");
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        producent = new Producent(nazwaProducenta + "NEW", miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        controller.DeleteProducent("BAYER");
         List<Producent> producentList = controller.GetProducenci();
         assertEquals(1, producentList.size());
-        assertEquals(nazwaProducenta, producentList.get(0).getNazwa());
+        assertEquals(nazwaProducenta + "NEW", producentList.get(0).getNazwa());
+        controller.DeleteAllProducents();
     }
 
     @Test
     public void CheckUpdatingProducent()
     {
-        Producent producent = new Producent(nazwaProducenta + "R", miastoProducenta + "R", ulicaProducenta + "R", kodPocztowyProducenta + "R", 9);
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        producent = new Producent(nazwaProducenta + "R", miastoProducenta + "R", ulicaProducenta + "R", kodPocztowyProducenta + "R", 9);
         controller.UpdateProducent(nazwaProducenta, producent);
         List<Producent> producentList = controller.GetProducenci();
         assertEquals(1, producentList.size());
@@ -67,5 +81,6 @@ public class Tests {
         controller.UpdateProducent("BAYERR", producent);
         producentList = controller.GetProducenci();
         assertEquals("BAYER", producentList.get(0).getNazwa());
-    }*/
+        controller.DeleteAllProducents();
+    }
 }

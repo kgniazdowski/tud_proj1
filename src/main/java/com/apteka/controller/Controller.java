@@ -28,6 +28,7 @@ public class Controller {
     private PreparedStatement getProducentByNameStmt;
     private PreparedStatement getLekiByProducentIdStmt;
     private PreparedStatement deleteProducentStmt;
+    private PreparedStatement deleteAllProducentsStmt;
     private PreparedStatement updateProducentStmt;
 	private PreparedStatement deleteLekStmt;
 	private PreparedStatement updateLekStmt;
@@ -50,6 +51,7 @@ public class Controller {
             getProducentByNameStmt = connection.prepareStatement("SELECT id FROM Producent WHERE nazwa=?;");
             getLekiByProducentIdStmt = connection.prepareStatement("SELECT * from Lek WHERE producentId=?;");
             deleteProducentStmt = connection.prepareStatement("DELETE FROM Producent WHERE nazwa=?;");
+            deleteAllProducentsStmt = connection.prepareStatement("DELETE FROM Producent");
             updateProducentStmt = connection.prepareStatement("UPDATE Producent SET nazwa=?, miasto=?, ulica=?, kodPocztowy=?, nr=? WHERE nazwa=?");
 			deleteLekStmt = connection.prepareStatement("DELETE FROM Lek WHERE nazwa=? AND producentId=?");
 			updateLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, producentId=? WHERE nazwa=? AND producentId=?;");
@@ -106,6 +108,20 @@ public class Controller {
         {
             deleteProducentStmt.setString(1, producentName);
             deleteProducentStmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean DeleteAllProducents()
+    {
+        try
+        {
+            deleteAllProducentsStmt.executeUpdate();
             return true;
         }
         catch (SQLException e)
