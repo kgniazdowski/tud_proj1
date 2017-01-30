@@ -36,6 +36,7 @@ public class Controller {
 	private PreparedStatement deleteLekStmt;
 	private PreparedStatement updateLekStmt;
 	private PreparedStatement getLekStmt;
+    private PreparedStatement addProducentToLekStmt;
 
     public Controller()
     {
@@ -60,6 +61,7 @@ public class Controller {
             updateProducentStmt = connection.prepareStatement("UPDATE Producent SET nazwa=?, miasto=?, ulica=?, kodPocztowy=?, nr=? WHERE nazwa=?");
 			deleteLekStmt = connection.prepareStatement("DELETE FROM Lek WHERE nazwa=? AND producentId=?");
 			updateLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, producentId=? WHERE nazwa=? AND producentId=?;");
+            addProducentToLekStmt = connection.prepareStatement("UPDATE Lek SET nazwa=?, cena=?, ilosc=?, producentId=? WHERE nazwa=? AND producentId IS NULL;");
 			getLekStmt = connection.prepareStatement("SELECT * FROM Lek WHERE nazwa=? AND producentId=?;");
             deleteAllLekiStmt = connection.prepareStatement("DELETE FROM Lek");
         }
@@ -274,10 +276,10 @@ public class Controller {
 	
 	public boolean UpdateLek(String lekName, String producentName, Lek modifiedLek)
 	{
-		if (!LekExists(lekName, producentName))
+		/*if (!LekExists(lekName, producentName))
 		{
 			return false;
-		}
+		}*/
 		
 		try
 		{
@@ -315,6 +317,32 @@ public class Controller {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private boolean AddProducentToLek(String lekName, String producentName, Lek modifiedLek)
+    {
+        try
+        {
+            addProducentToLekStmt.setString(1, modifiedLek.getNazwa());
+            addProducentToLekStmt.setDouble(2, modifiedLek.getCena());
+            addProducentToLekStmt.setInt(3, modifiedLek.getIlosc());
+            addProducentToLekStmt.setInt(4, modifiedLek.getProducentId());
+            addProducentToLekStmt.setString(5, lekName);
+            addProducentToLekStmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public void AddProducentToLek(Lek lek, String producentName)
+    {
+        Lek newLek = lek;
+        newLek.setProducentId(GetProducentIdByName(producentName));
+        AddProducentToLek(lek.getNazwa(), producentName, newLek);
     }
 
     public List<Lek> GetLeki()
