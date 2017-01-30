@@ -304,7 +304,7 @@ public class Controller {
             updateLekStmt.setString(1, lek.getNazwa());
             updateLekStmt.setDouble(2, lek.getCena());
             updateLekStmt.setInt(3, lek.getIlosc());
-            updateLekStmt.setInt(4, lek.getProducentId());
+            updateLekStmt.setNull(4, java.sql.Types.INTEGER);
             updateLekStmt.setString(5, lek.getNazwa());
             updateLekStmt.setInt(6, lek.getProducentId());
             updateLekStmt.executeUpdate();

@@ -132,4 +132,24 @@ public class Tests {
         fromBase = controller.GetLekiByProducentName(nazwaProducenta + "ToTylkoTest");
         assertEquals(0, fromBase.size());
     }
+
+    @Test
+    public void CheckDeleteProducentFromLek()
+    {
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        Lek lek = new Lek("Rutinoborbin", cenaLeku, iloscLeku);
+        Lek lek2 = new Lek(nazwaLeku, cenaLeku, iloscLeku);
+        controller.AddLek(lek, nazwaProducenta);
+        controller.AddLek(lek2, nazwaProducenta);
+
+        assertEquals(2, controller.GetLeki().size());
+
+        List<Lek> fromBase = controller.GetLekiByProducentName(nazwaProducenta);
+        assertEquals(2, fromBase.size());
+
+        controller.DeleteProducentFromLek(lek);
+        fromBase = controller.GetLekiByProducentName(nazwaProducenta);
+        assertEquals(1, fromBase.size());
+    }
 }
