@@ -3,6 +3,7 @@ package com.apteka.service;
 import com.apteka.controller.Controller;
 import com.apteka.model.Lek;
 import com.apteka.model.Producent;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
@@ -23,6 +24,13 @@ public class Tests {
     private String nazwaLeku = "Februsan";
     private double cenaLeku = 13.99;
     private int iloscLeku = 87;
+
+    @Before
+    public void DeleteAll()
+    {
+        controller.DeleteAllLeki();
+        controller.DeleteAllProducents();
+    }
 
     @Test
     public void CheckAddingProducent()
@@ -97,12 +105,31 @@ public class Tests {
         assertEquals(1, lekList.size());
         Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
         controller.AddProducent(producent);
-        Lek lekZProducentem = new Lek("Rutinoborbin", cenaLeku, iloscLeku, controller.GetProducentIdByName(nazwaProducenta));
-        controller.AddLek(lekZProducentem);
+        Lek lekZProducentem = new Lek("Rutinoborbin", cenaLeku, iloscLeku);
+        controller.AddLek(lekZProducentem, nazwaProducenta);
         lekList = controller.GetLeki();
         assertEquals(2, lekList.size());
         //assertEquals(null, lekList.get(0).getProducentId());
         controller.DeleteAllLeki();
         controller.DeleteAllProducents();
+    }
+
+    @Test
+    public void CheckGettingAllLekByProducent()
+    {
+        Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
+        controller.AddProducent(producent);
+        Lek lek = new Lek("Rutinoborbin", cenaLeku, iloscLeku);
+        Lek lek2 = new Lek(nazwaLeku, cenaLeku, iloscLeku);
+        controller.AddLek(lek, nazwaProducenta);
+        controller.AddLek(lek2, nazwaProducenta);
+
+        assertEquals(2, controller.GetLeki().size());
+
+        List<Lek> fromBase = controller.GetLekiByProducentName(nazwaProducenta);
+        assertEquals(2, fromBase.size());
+
+        fromBase = controller.GetLekiByProducentName(nazwaProducenta + "ToTylkoTest");
+        assertEquals(0, fromBase.size());
     }
 }

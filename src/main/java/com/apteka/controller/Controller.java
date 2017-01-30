@@ -297,6 +297,26 @@ public class Controller {
 		return false;
 	}
 
+	public boolean DeleteProducentFromLek(Lek lek)
+    {
+        try
+        {
+            updateLekStmt.setString(1, lek.getNazwa());
+            updateLekStmt.setDouble(2, lek.getCena());
+            updateLekStmt.setInt(3, lek.getIlosc());
+            updateLekStmt.setInt(4, lek.getProducentId());
+            updateLekStmt.setString(5, lek.getNazwa());
+            updateLekStmt.setInt(6, lek.getProducentId());
+            updateLekStmt.executeUpdate();
+            return true;
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public List<Lek> GetLeki()
     {
         List<Lek> result = new ArrayList<Lek>();
