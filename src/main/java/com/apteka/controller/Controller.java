@@ -238,24 +238,35 @@ public class Controller {
             return false;
         }
     }
-	
+
+    //TRANSAKCJE
 	public boolean DeleteLek(String lekName, String producentName)
 	{
-		if (!ProducentExists(producentName))
-		{
-			return false;
-		}
-		
 		try
 		{
+            connection.setAutoCommit(false);
+            if (!ProducentExists(producentName))
+            {
+                return false;
+            }
+
 			deleteLekStmt.setString(1, lekName);
 			deleteLekStmt.setInt(2, GetProducentIdByName(producentName));
 			deleteLekStmt.executeUpdate();
+
+            connection.commit();
+            connection.setAutoCommit(true);
 			return true;
 		}
 		catch (SQLException e)
 		{
-			e.printStackTrace();
+            try {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
 			return false;
 		}
 	}
@@ -368,12 +379,17 @@ public class Controller {
         return result;
     }
 
+    //TRANSAKCJA
     public List<Lek> GetLekiByProducentName(String producentName)
     {
-        int producentId = GetProducentIdByName(producentName);
         List<Lek> result = new ArrayList<Lek>();
+
         try
         {
+            connection.setAutoCommit(false);
+
+            int producentId = GetProducentIdByName(producentName);
+
             getLekiByProducentIdStmt.setInt(1, producentId);
             ResultSet rs = getLekiByProducentIdStmt.executeQuery();
             while (rs.next())
@@ -384,9 +400,17 @@ public class Controller {
                 lek.setIlosc(rs.getInt("ilosc"));
                 result.add(lek);
             }
+            connection.commit();
+            connection.setAutoCommit(true);
         }
         catch (SQLException e)
         {
+            try {
+                connection.rollback();
+                connection.setAutoCommit(true);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+            }
             e.printStackTrace();
         }
         return result;
