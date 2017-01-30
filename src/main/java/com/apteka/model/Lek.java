@@ -9,6 +9,26 @@ public class Lek {
     public int ilosc;
     public int producentId;
 
+    public Lek()
+    {
+
+    }
+
+    public Lek(String nazwa, double cena, int ilosc, int producentd)
+    {
+        this.nazwa = nazwa;
+        this.cena = cena;
+        this.ilosc = ilosc;
+        this.producentId = producentd;
+    }
+
+    public Lek(String nazwa, double cena, int ilosc)
+    {
+        this.nazwa = nazwa;
+        this.cena = cena;
+        this.ilosc = ilosc;
+    }
+
     public String getNazwa() {
         return nazwa;
     }

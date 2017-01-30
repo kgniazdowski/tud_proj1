@@ -1,6 +1,7 @@
 package com.apteka.service;
 
 import com.apteka.controller.Controller;
+import com.apteka.model.Lek;
 import com.apteka.model.Producent;
 import org.junit.Test;
 
@@ -19,6 +20,9 @@ public class Tests {
     private String ulicaProducenta = "Borewicza";
     private String kodPocztowyProducenta = "80-428";
     private int nrProducenta = 12;
+    private String nazwaLeku = "Februsan";
+    private double cenaLeku = 13.99;
+    private int iloscLeku = 87;
 
     @Test
     public void CheckAddingProducent()
@@ -85,11 +89,20 @@ public class Tests {
     }
 
     @Test
-    public void CheckAddLek()
-    {
+    public void CheckAddLekAndSetProducent()
+    {//AddLek jest metodą przeciążoną. Testy dla obu przeciążeń:
+        Lek lekBezProducenta = new Lek(nazwaLeku, cenaLeku, iloscLeku);
+        controller.AddLek(lekBezProducenta);
+        List<Lek> lekList = controller.GetLeki();
+        assertEquals(1, lekList.size());
         Producent producent = new Producent(nazwaProducenta, miastoProducenta, ulicaProducenta, kodPocztowyProducenta, nrProducenta);
         controller.AddProducent(producent);
-
+        Lek lekZProducentem = new Lek("Rutinoborbin", cenaLeku, iloscLeku, controller.GetProducentIdByName(nazwaProducenta));
+        controller.AddLek(lekZProducentem);
+        lekList = controller.GetLeki();
+        assertEquals(2, lekList.size());
+        //assertEquals(null, lekList.get(0).getProducentId());
+        controller.DeleteAllLeki();
         controller.DeleteAllProducents();
     }
 }
